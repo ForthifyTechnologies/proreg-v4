@@ -1,7 +1,7 @@
 type Timetable = {
   title: string;
   university: string;
-  session: string;
+  year: string;
   semester: number;
   schedules: Schedule[];
 };

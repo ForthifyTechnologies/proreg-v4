@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 
 type Session = {
-  session: string;
+  year: string;
   semester: number;
 };
 
@@ -13,7 +13,7 @@ export default function getSessions(content: string): {
 
   const temp = $("h3.box-title").text().trim().replace(",", "").split(" ");
   const currentSession: Session = {
-    session: temp.at(-1) || "",
+    year: temp.at(-1) || "",
     semester: parseInt(temp.at(-2) || "0"),
   };
   const sessions: Session[] = $("ul.dropdown-menu > li > a")
@@ -21,7 +21,7 @@ export default function getSessions(content: string): {
       // Original string: Sem X, 20XX/20XX
 
       // Get session: 20XX/20XX
-      session: $(el).text().split(", ")[1],
+      year: $(el).text().split(", ")[1],
 
       // Get semester: X
       semester: parseInt($(el).text().split(", ")[0].split(" ")[1]),

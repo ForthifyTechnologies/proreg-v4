@@ -14,7 +14,7 @@ const IMALUUM_SCHEDULE_PAGE = "https://imaluum.iium.edu.my/MyAcademic/schedule";
 export async function POST(request: Request) {
   const cookieJar = new CookieJar();
 
-  const { username, password } = await request.json();
+  const { username, password, year, semester } = await request.json();
 
   /**
    * Attempt to login to iMaalum
@@ -81,63 +81,40 @@ export async function POST(request: Request) {
    * Get the schedule page data
    */
 
-  const response = await got(IMALUUM_SCHEDULE_PAGE, {
-    headers: {
-      Cookie: cookies().toString(),
-    },
-    https: { rejectUnauthorized: false },
-    followRedirect: false,
-  });
+  // Get the schedule page
+  // Include the GET params if session and semester are provided
+  const response = await got(
+    IMALUUM_SCHEDULE_PAGE +
+      (year && semester ? `?ses=${year}&sem=${semester}` : ""),
+    {
+      headers: {
+        Cookie: cookies().toString(),
+      },
+      https: { rejectUnauthorized: false },
+      followRedirect: false,
+    }
+  );
 
-  // Scrape and store the schedule data inside a temp variable
-  let timetables: Timetable[] = [];
-  const currentSchedules = getSchedulesFromContent(response.body);
+  // Scrape and store the schedules
+  const schedules = getSchedulesFromContent(response.body);
 
   // Get the list of sessions excluding the recently scraped one
   const { currentSession, sessions } = getSessions(response.body);
 
-  // Loop through the list of sessions and scrape the schedule data
-  for (const session of sessions) {
-    let schedules: Schedule[] = [];
+  // Calculate the year based on the session
+  const yearNo =
+    parseInt(currentSession.year.split("/")[0]) -
+    parseInt(sessions[0].year.split("/")[0]) +
+    1;
 
-    // If is current schedule, use previously scraped data
-    if (
-      session.session === currentSession.session &&
-      session.semester === currentSession.semester
-    )
-      schedules = currentSchedules;
-    // Else get the schedule page data
-    else {
-      const response = await got(
-        IMALUUM_SCHEDULE_PAGE +
-          `?ses=${session.session}&sem=${session.semester}`,
-        {
-          headers: {
-            Cookie: cookies().toString(),
-          },
-          https: { rejectUnauthorized: false },
-          followRedirect: false,
-        }
-      );
-      schedules = getSchedulesFromContent(response.body);
-    }
-
-    // Calculate the year based on the session
-    const year =
-      parseInt(session.session.split("/")[0]) -
-      parseInt(sessions[0].session.split("/")[0]) +
-      1;
-
-    timetables.push({
-      title: `Year ${year} Semester ${session.semester}`,
-      university: "IIUM",
-      session: session.session,
-      semester: session.semester,
-      schedules: schedules,
-    });
-  }
-
-  // Merge the temp variable with the schedule data
+  // Timetable data
+  const timetable: Timetable = {
+    title: `Year ${yearNo} Semester ${currentSession.semester}`,
+    university: "IIUM",
+    year: currentSession.year,
+    semester: currentSession.semester,
+    schedules: schedules,
+  };
 
   /**
    * Logout from iMaalum
@@ -148,5 +125,5 @@ export async function POST(request: Request) {
   cookies().delete("XSRF-TOKEN");
   cookies().delete("laravel_session");
 
-  return NextResponse.json({ timetables }, { status: 200 });
+  return NextResponse.json({ timetable, sessions }, { status: 200 });
 }
