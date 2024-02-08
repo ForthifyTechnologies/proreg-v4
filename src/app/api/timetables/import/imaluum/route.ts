@@ -102,6 +102,12 @@ export async function POST(request: NextRequest) {
 
 	// Get the schedule page
 	// Include the GET params if session and semester are provided
+	console.log(
+		"requesting to: ",
+		IMALUUM_SCHEDULE_PAGE +
+			(year && semester ? `?ses=${year}&sem=${semester}` : ""),
+	);
+
 	const response = await got(
 		IMALUUM_SCHEDULE_PAGE +
 			(year && semester ? `?ses=${year}&sem=${semester}` : ""),
@@ -121,11 +127,16 @@ export async function POST(request: NextRequest) {
 	// const { currentSession, sessions } = getSessions(response.body);
 	const { currentSession, sessions } = getSessionsNew(response.body);
 
+	console.log(parseInt(currentSession.year.split("/")[0]));
+	console.log(parseInt(sessions[0].year.split("/")[0]) + 1);
+
 	// Calculate the year based on the session
 	const yearNo =
 		parseInt(currentSession.year.split("/")[0]) -
 		parseInt(sessions[0].year.split("/")[0]) +
 		1;
+
+	console.log("Year no: ", yearNo);
 
 	// Timetable data
 	const timetable: Timetable = {
@@ -135,6 +146,9 @@ export async function POST(request: NextRequest) {
 		semester: currentSession.semester,
 		schedules: schedules,
 	};
+
+	console.log("Timetable: ", timetable);
+	console.log("Sessions: ", sessions);
 
 	return NextResponse.json(
 		{ timetable, sessions, cookieStore: cookieJar.toJSON().cookies },
