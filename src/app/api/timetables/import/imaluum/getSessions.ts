@@ -11,6 +11,7 @@ export default function getSessions(content: string): {
 	sessions: Session[];
 } {
 	// console.time("getSessions");
+	console.log("getSessions");
 	const $ = cheerio.load(content);
 
 	const temp = $("h3.box-title").text().trim().replace(",", "").split(" ");
@@ -39,6 +40,7 @@ export default function getSessions(content: string): {
 // optimized version
 export function getSessionsNew(content: string) {
 	// console.time("getSessionsNew");
+	console.log("getSessionsNew");
 
 	const root = parse(content);
 
@@ -46,29 +48,39 @@ export function getSessionsNew(content: string) {
 		".box.box-primary .box-header.with-border .dropdown ul.dropdown-menu li[style*='font-size:16px']",
 	);
 
+	const temp = root
+		.querySelector(".box.box-primary .box-header.with-border h3.box-title")
+		.textContent.trim()
+		.replace(", ", " ")
+		.split(" ");
+
 	const sessionList = sessionBody.map((element) => {
 		const row = element;
 		const sessionName = row.querySelector("a")?.textContent.trim();
 		return sessionName;
 	});
 
+	sessionList.reverse();
+
 	if (sessionList.length === 0) {
 		throw new Error("Session list not found");
 	}
 
-	const currentSession: Session = {
-		year: sessionList.at(-1).split(", ")[1],
-		semester: parseInt(sessionList.at(-1).split(", ")[0].split(" ")[1]),
-	};
-
 	const sessions: Session[] = sessionList.map((session) => {
 		return {
-			year: session.split(", ")[1],
-			semester: parseInt(session.split(", ")[0].split(" ")[1]),
+			year: session.split(", ")[1].trim(),
+			semester: parseInt(session.split(", ")[0].split(" ")[1].trim()),
 		};
 	});
 
+	const currentSession: Session = {
+		year: temp.at(-1) || "",
+		semester: parseInt(temp.at(-2) || "0"),
+	};
+
+	console.log("currentSession: ", currentSession);
+
 	// console.timeEnd("getSessionsNew");
 
-	return { currentSession, sessions: sessions.reverse() };
+	return { currentSession, sessions: sessions };
 }
