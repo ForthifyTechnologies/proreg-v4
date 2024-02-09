@@ -14,8 +14,8 @@ export async function GET(request: NextRequest) {
 	if (subject) {
 		const schedules = IMALUUMSCHEDULE.filter(
 			(schedule) =>
-				schedule.course.code.toLowerCase().includes(subject.toLowerCase()) ||
-				schedule.course.name.toLowerCase().includes(subject.toLowerCase()),
+				schedule.code.toLowerCase().includes(subject.toLowerCase()) ||
+				schedule.title.toLowerCase().includes(subject.toLowerCase()),
 		);
 
 		return NextResponse.json(schedules);

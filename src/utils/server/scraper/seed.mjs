@@ -26,6 +26,16 @@ const KULY = [
 const session = "2023_2024";
 const semester = 2;
 
+// type Schedule = {
+//   code: string;
+//   title: string;
+//   section: number;
+//   creditHours: number;
+//   lecturer: string;
+//   venue: string;
+//   weekTimes: WeekTime[];
+// };
+
 async function main() {
 	console.time("fetching");
 	const allData = []; // Array to store data for each kuly
@@ -56,20 +66,30 @@ async function main() {
 					});
 				}
 				allData.push({
-					course: {
-						code: x.code,
-						name: x.title,
-						credit_hours: x.chr,
-						university: "IIUM",
-						faculty: kuly,
-					},
+					code: x.code,
+					title: x.title,
 					section: x.sect,
-					session: ses,
-					semester: sem,
-					venues: x.venue,
-					lecturers: x.lect,
-					week_times: timestamps,
+					creditHours: x.chr,
+					lecturer: x.lect,
+					venue: x.venue,
+					weekTimes: timestamps,
 				});
+
+				// allData.push({
+				// 	course: {
+				// 		code: x.code,
+				// 		name: x.title,
+				// 		credit_hours: x.chr,
+				// 		university: "IIUM",
+				// 		faculty: kuly,
+				// 	},
+				// 	section: x.sect,
+				// 	session: ses,
+				// 	semester: sem,
+				// 	venues: x.venue,
+				// 	lecturers: x.lect,
+				// 	week_times: timestamps,
+				// });
 			}
 		}
 	});
