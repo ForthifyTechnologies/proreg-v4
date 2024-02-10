@@ -61,8 +61,8 @@ async function main() {
 				for (const y of x.dayTime) {
 					timestamps.push({
 						day: y.day,
-						start_time: y.startTime,
-						end_time: y.endTime,
+						start: y.startTime,
+						end: y.endTime,
 					});
 				}
 				allData.push({
