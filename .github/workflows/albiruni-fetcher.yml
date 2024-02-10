@@ -3,12 +3,12 @@ on:
     branches:
       - albiruni-fetcher
   schedule:
-    - cron: '0 8 * * *' # every day at 8am
-name: Pull Data and Build
+    - cron: '0 8 * * 1' # every Monday at 8am
+name: ✨ Albiruni-Fetcher
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
+    
     steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
@@ -21,10 +21,19 @@ jobs:
       - name: 🔨 Build Project
         run: |
           bun install
-          bun run build
+        # bun run build
           
       - name: 🚧 Scrape
         run: bun src/utils/server/scraper/seed.mjs
-      - uses: mikeal/publish-to-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub sets this for you
+      # - uses: mikeal/publish-to-github-action@master
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub sets this for you
+
+      - name: 👷 Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "🗃️ Update IIUM Catalog from ${{ github.run_id }}"
+          title: "🗃️ Update IIUM Catalog"
+          branch: albiruni-fetcher
+          base: main
