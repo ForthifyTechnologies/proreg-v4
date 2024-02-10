@@ -25,12 +25,9 @@ jobs:
           
       - name: 🚧 Scrape
         run: bun src/utils/server/scraper/seed.mjs
-      # - uses: mikeal/publish-to-github-action@master
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub sets this for you
 
       - name: 👷 Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "🗃️ Update IIUM Catalog from ${{ github.run_id }}"
