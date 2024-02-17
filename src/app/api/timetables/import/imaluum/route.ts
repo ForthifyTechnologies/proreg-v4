@@ -25,11 +25,11 @@ export async function POST(request: NextRequest) {
 	 * to get the auth cookies
 	 */
 
-	if (
-		_cookie?.split("=")[0] !== "MOD_AUTH_CAS" ||
-		_cookie.length === 0 ||
-		_cookie === null
-	) {
+	// if (
+	// 	_cookie?.split("=")[0] !== "MOD_AUTH_CAS" ||
+	// 	_cookie.length === 0 ||
+	// 	_cookie === null
+	// ) {
 		console.log("Logging in");
 		const payload = new URLSearchParams({
 			username,
@@ -87,15 +87,15 @@ export async function POST(request: NextRequest) {
 				break;
 			}
 		}
-	} else {
-		console.log("Using existing cookie");
-		cookieJar.setCookieSync(_cookie, IMALUUM_CAS_URL);
-		cookies().set({
-			name: "MOD_AUTH_CAS",
-			value: _cookie.split("=")[1],
-			expires: new Date(Date.now() + 10 * 60 * 1000),
-		});
-	}
+	// } else {
+	// 	console.log("Using existing cookie");
+	// 	cookieJar.setCookieSync(_cookie, IMALUUM_CAS_URL);
+	// 	cookies().set({
+	// 		name: "MOD_AUTH_CAS",
+	// 		value: _cookie.split("=")[1],
+	// 		expires: new Date(Date.now() + 10 * 60 * 1000),
+	// 	});
+	// }
 	/**
 	 * Get the schedule page data
 	 */
