@@ -59,7 +59,7 @@ export function getSchedulesFromContentNew(content: string) {
 		const tds = row.querySelectorAll("td");
 		if (tds.length === 0) continue;
 
-		if (tds.length >= 9) {
+		if (tds.length === 9) {
 			const code = tds[0].textContent.trim();
 			const title = tds[1].textContent.trim();
 			const sect = tds[2].textContent.trim();
@@ -78,6 +78,25 @@ export function getSchedulesFromContentNew(content: string) {
 				title: capitalize(title),
 				section: parseInt(sect),
 				creditHours: parseFloat(chr),
+				lecturer: capitalize(lecturer),
+				venue: venue,
+				weekTimes: getTimestamps(day, time),
+			});
+		}
+
+		if (tds.length === 4) {
+			const day = tds[5].textContent.trim();
+			if (day === "" || day === null) continue;
+			const time = tds[6].textContent.trim();
+			if (time === "" || time === null) continue;
+			const venue = tds[7].textContent.trim();
+			const lecturer = tds[8].textContent.trim();
+
+			schedules.push({
+				code: schedules[schedules.length - 1].code,
+				title: schedules[schedules.length - 1].title,
+				section: schedules[schedules.length - 1].section,
+				creditHours: schedules[schedules.length - 1].creditHours,
 				lecturer: capitalize(lecturer),
 				venue: venue,
 				weekTimes: getTimestamps(day, time),
