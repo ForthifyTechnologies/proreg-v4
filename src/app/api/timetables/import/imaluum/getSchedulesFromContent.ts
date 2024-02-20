@@ -84,24 +84,24 @@ export function getSchedulesFromContentNew(content: string) {
 			});
 		}
 
-		if (tds.length === 4) {
-			const day = tds[5].textContent.trim();
-			if (day === "" || day === null) continue;
-			const time = tds[6].textContent.trim();
-			if (time === "" || time === null) continue;
-			const venue = tds[7].textContent.trim();
-			const lecturer = tds[8].textContent.trim();
+		// if (tds.length === 4) {
+		// 	const day = tds[5].textContent.trim();
+		// 	if (day === "" || day === null) continue;
+		// 	const time = tds[6].textContent.trim();
+		// 	if (time === "" || time === null) continue;
+		// 	const venue = tds[7].textContent.trim();
+		// 	const lecturer = tds[8].textContent.trim();
 
-			schedules.push({
-				code: schedules[schedules.length - 1].code,
-				title: schedules[schedules.length - 1].title,
-				section: schedules[schedules.length - 1].section,
-				creditHours: schedules[schedules.length - 1].creditHours,
-				lecturer: capitalize(lecturer),
-				venue: venue,
-				weekTimes: getTimestamps(day, time),
-			});
-		}
+		// 	schedules.push({
+		// 		code: schedules[schedules.length - 1].code,
+		// 		title: schedules[schedules.length - 1].title,
+		// 		section: schedules[schedules.length - 1].section,
+		// 		creditHours: schedules[schedules.length - 1].creditHours,
+		// 		lecturer: capitalize(lecturer),
+		// 		venue: venue,
+		// 		weekTimes: getTimestamps(day, time),
+		// 	});
+		// }
 	}
 
 	// console.timeEnd("getSchedulesFromContentNew");
